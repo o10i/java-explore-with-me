@@ -1,13 +1,15 @@
 package ru.practicum.dto;
 
 import com.sun.istack.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@AllArgsConstructor
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HitDto {
     @NotNull
@@ -19,3 +21,4 @@ public class HitDto {
     @NotNull
     String timestamp;
 }
+

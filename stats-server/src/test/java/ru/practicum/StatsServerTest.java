@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EvmStatsServiceTest {
+class StatsServerTest {
     @Test
     void contextLoads() {
-        EvmStatsService.main(new String[]{});
+        StatsServer.main(new String[]{});
     }
 }
