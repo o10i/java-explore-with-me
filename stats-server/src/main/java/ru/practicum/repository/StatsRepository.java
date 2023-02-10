@@ -11,19 +11,20 @@ import java.util.List;
 
 @Repository
 public interface StatsRepository extends JpaRepository<Hit, Long> {
-    @Query("select new ru.practicum.dto.ViewStats(h.app, h.uri, count(distinct h.ip)) " +
-            "from  Hit h " +
-            "where h.timestamp between ?1 and ?2 " +
-            "and h.uri in (?3) " +
-            "group by h.app, h.uri " +
-            "order by count(distinct h.ip) desc")
+    @Query("SELECT new ru.practicum.dto.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
+            "FROM Hit h " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
+            "AND h.uri IN (?3) " +
+            "GROUP BY h.app, h.uri " +
+            "ORDER BY COUNT(DISTINCT h.ip) DESC")
+
     List<ViewStats> findUniqueViewStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("select new ru.practicum.dto.ViewStats(h.app, h.uri, count(h.ip)) " +
-            "from  Hit h " +
-            "where h.timestamp between ?1 and ?2 " +
-            "and h.uri in (?3) " +
-            "group by h.app, h.uri " +
-            "order by count(h.ip) desc")
+    @Query("SELECT new ru.practicum.dto.ViewStats(h.app, h.uri, COUNT(h.ip)) " +
+            "FROM Hit h " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
+            "AND h.uri IN (?3) " +
+            "GROUP BY h.app, h.uri " +
+            "ORDER BY COUNT(h.ip) DESC")
     List<ViewStats> findViewStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 }
