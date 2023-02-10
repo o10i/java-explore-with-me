@@ -17,7 +17,7 @@ public interface StatsRepository extends JpaRepository<Hit, Long> {
             "and h.uri in (?3) " +
             "group by h.app, h.uri " +
             "order by count(distinct h.ip) desc")
-    List<ViewStats> findUniqueViews(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<ViewStats> findUniqueViewStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("select new ru.practicum.dto.ViewStats(h.app, h.uri, count(h.ip)) " +
             "from  Hit h " +
@@ -25,5 +25,5 @@ public interface StatsRepository extends JpaRepository<Hit, Long> {
             "and h.uri in (?3) " +
             "group by h.app, h.uri " +
             "order by count(h.ip) desc")
-    List<ViewStats> findViews(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<ViewStats> findViewStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 }

@@ -31,9 +31,9 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique) {
         if (unique) {
-            return repository.findUniqueViews(getDateTime(start), getDateTime(end), uris);
+            return repository.findUniqueViewStats(getDateTime(start), getDateTime(end), uris);
         } else {
-            return repository.findViews(getDateTime(start), getDateTime(end), uris);
+            return repository.findViewStats(getDateTime(start), getDateTime(end), uris);
         }
     }
 }
