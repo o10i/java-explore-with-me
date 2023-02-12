@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.practicum.dto.HitDto;
+import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStats;
 import ru.practicum.service.StatsService;
 
@@ -37,10 +37,10 @@ class StatsControllerTest {
     @SneakyThrows
     @Test
     void save() {
-        HitDto hitDto = new HitDto("ewm-main-service", "/events/1", "73.80.0.87", "2023-02-09 13:50:47");
+        EndpointHitDto endpointHitDto = new EndpointHitDto("ewm-main-service", "/events/1", "73.80.0.87", "2023-02-09 13:50:47");
 
         mvc.perform(MockMvcRequestBuilders.post("/hit")
-                        .content(mapper.writeValueAsString(hitDto))
+                        .content(mapper.writeValueAsString(endpointHitDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
