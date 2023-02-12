@@ -1,8 +1,8 @@
 package ru.practicum.service;
 
-import ru.practicum.dto.EventRequestDto;
-import ru.practicum.model.Event;
+import ru.practicum.dto.EventFullDto;
+import ru.practicum.dto.NewEventDto;
 
 public interface EventService {
-    Event save(EventRequestDto eventRequestDto, Long userId);
+    EventFullDto save(Long userId, NewEventDto newEventDto);
 }

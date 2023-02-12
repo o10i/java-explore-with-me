@@ -2,29 +2,32 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EndpointHit;
-import ru.practicum.mapper.HitMapper;
 import ru.practicum.dto.ViewStats;
+import ru.practicum.mapper.HitMapper;
 import ru.practicum.repository.StatsRepository;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static ru.practicum.mapper.DateTimeMapper.toLocalDateTime;
 import static ru.practicum.mapper.HitMapper.toEndpointHit;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StatsServiceImpl implements StatsService {
     private final StatsRepository repository;
 
     private static LocalDateTime getDateTime(String dateTime) {
         dateTime = URLDecoder.decode(dateTime, StandardCharsets.UTF_8);
-        return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return toLocalDateTime(dateTime);
     }
 
+    @Transactional
     @Override
     public EndpointHit save(EndpointHit endpointHitDto) {
         return toEndpointHit(repository.save(HitMapper.toHit(endpointHitDto)));

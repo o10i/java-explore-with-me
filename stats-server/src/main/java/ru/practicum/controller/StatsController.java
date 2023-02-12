@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHit;
+import ru.practicum.dto.ViewStats;
 import ru.practicum.service.StatsService;
 
 import javax.validation.constraints.NotBlank;
@@ -16,7 +17,7 @@ public class StatsController {
     private final StatsService service;
 
     @GetMapping("/stats")
-    public ResponseEntity<Object> getStats(@RequestParam @NotBlank String start,
+    public ResponseEntity<List<ViewStats>> getStats(@RequestParam @NotBlank String start,
                                                     @RequestParam @NotBlank String end,
                                                     @RequestParam List<String> uris,
                                                     @RequestParam(defaultValue = "false") Boolean unique) {
@@ -24,7 +25,7 @@ public class StatsController {
     }
 
     @PostMapping("/hit")
-    public ResponseEntity<Object> save(@RequestBody EndpointHit endpointHitDto) {
+    public ResponseEntity<EndpointHit> save(@RequestBody EndpointHit endpointHitDto) {
         return new ResponseEntity<>(service.save(endpointHitDto), HttpStatus.CREATED);
     }
 }

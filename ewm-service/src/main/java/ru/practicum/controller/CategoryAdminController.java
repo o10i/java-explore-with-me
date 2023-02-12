@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.CategoryRequestDto;
+import ru.practicum.dto.CategoryDto;
+import ru.practicum.dto.NewCategoryDto;
 import ru.practicum.service.CategoryService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,8 +17,8 @@ public class CategoryAdminController {
     private final CategoryService service;
 
     @PostMapping()
-    public ResponseEntity<Object> save(@RequestBody CategoryRequestDto categoryRequestDto) {
-        return new ResponseEntity<>(service.save(categoryRequestDto), HttpStatus.CREATED);
+    public ResponseEntity<CategoryDto> save(@RequestBody @Valid NewCategoryDto newCategoryDto) {
+        return new ResponseEntity<>(service.save(newCategoryDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{catId}")
@@ -25,8 +28,8 @@ public class CategoryAdminController {
     }
 
     @PatchMapping("/{catId}")
-    public ResponseEntity<Object> update(@RequestBody CategoryRequestDto categoryRequestDto,
+    public ResponseEntity<CategoryDto> update(@RequestBody NewCategoryDto newCategoryDto,
                                          @PathVariable Long catId) {
-        return ResponseEntity.ok(service.update(categoryRequestDto, catId));
+        return ResponseEntity.ok(service.update(newCategoryDto, catId));
     }
 }

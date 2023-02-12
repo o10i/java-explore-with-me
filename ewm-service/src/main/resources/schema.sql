@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users, categories, locations, events;
+DROP TABLE IF EXISTS users, categories, events;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -13,29 +13,23 @@ CREATE TABLE IF NOT EXISTS categories
     name VARCHAR(128) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS locations
-(
-    id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    lat DOUBLE PRECISION,
-    lon DOUBLE PRECISION
-);
-
 CREATE TABLE IF NOT EXISTS events
 (
-    id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    annotation        VARCHAR(1024) NOT NULL,
-    category_id       BIGINT        NOT NULL REFERENCES categories ON DELETE CASCADE,
-    confirmedRequests BIGINT,
-    createdOn         VARCHAR(19),
-    description       VARCHAR(4096),
-    eventDate         VARCHAR(19)   NOT NULL,
-    initiator_id      BIGINT        NOT NULL REFERENCES users ON DELETE CASCADE,
-    location_id       BIGINT        NOT NULL REFERENCES locations ON DELETE CASCADE,
-    paid              BOOL          NOT NULL,
-    participantLimit  INTEGER,
-    publishedOn       VARCHAR(19),
-    requestModeration BOOL,
-    state             VARCHAR(64),
-    title             VARCHAR(256)  NOT NULL,
-    views             BIGINT
+    id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    annotation         VARCHAR(2000) NOT NULL,
+    category_id        BIGINT        NOT NULL REFERENCES categories ON DELETE CASCADE,
+    confirmed_requests BIGINT,
+    created_on         VARCHAR(19),
+    description        VARCHAR(7000),
+    event_date         VARCHAR(19)   NOT NULL,
+    initiator_id       BIGINT        NOT NULL REFERENCES users ON DELETE CASCADE,
+    lat                REAL          NOT NULL,
+    lon                REAL          NOT NULL,
+    paid               BOOL          NOT NULL,
+    participant_limit  INTEGER,
+    published_on       VARCHAR(19),
+    request_moderation BOOL,
+    state              VARCHAR(64),
+    title              VARCHAR(120)  NOT NULL,
+    views              BIGINT
 );

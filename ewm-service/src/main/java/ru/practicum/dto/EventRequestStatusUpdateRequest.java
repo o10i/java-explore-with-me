@@ -6,18 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EventRequestDto {
-    String annotation;
-    Long category;
-    String description;
-    String eventDate;
-    LocationRequestDto location;
-    Boolean paid;
-    Integer participantLimit;
-    Boolean requestModeration;
-    String title;
+public class EventRequestStatusUpdateRequest {
+    List<Long> requestIds;
+    String status;
 }

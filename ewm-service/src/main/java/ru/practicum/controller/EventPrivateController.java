@@ -5,8 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.practicum.dto.EventRequestDto;
+import ru.practicum.dto.EventFullDto;
+import ru.practicum.dto.NewEventDto;
 import ru.practicum.service.EventService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,9 +25,9 @@ public class EventPrivateController {
     }*/
 
     @PostMapping("/{userId}/events")
-    public ResponseEntity<Object> save(@RequestBody EventRequestDto eventRequestDto,
-                                       @PathVariable Long userId) {
-        return new ResponseEntity<>(service.save(eventRequestDto, userId), HttpStatus.CREATED);
+    public ResponseEntity<EventFullDto> save(@PathVariable Long userId,
+                                             @RequestBody @Valid NewEventDto newEventDto) {
+        return new ResponseEntity<>(service.save(userId, newEventDto), HttpStatus.CREATED);
     }
 /*
     @DeleteMapping("/{eventId}")

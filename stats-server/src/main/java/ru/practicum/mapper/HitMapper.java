@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.model.Hit;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import static ru.practicum.mapper.DateTimeMapper.toLocalDateTime;
+import static ru.practicum.mapper.DateTimeMapper.toStringDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HitMapper {
@@ -15,7 +15,7 @@ public final class HitMapper {
         hit.setApp(endpointHitDto.getApp());
         hit.setUri(endpointHitDto.getUri());
         hit.setIp(endpointHitDto.getIp());
-        hit.setTimestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        hit.setTimestamp(toLocalDateTime(endpointHitDto.getTimestamp()));
         return hit;
     }
 
@@ -25,6 +25,6 @@ public final class HitMapper {
                 hit.getApp(),
                 hit.getUri(),
                 hit.getIp(),
-                hit.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                toStringDateTime(hit.getTimestamp()));
     }
 }

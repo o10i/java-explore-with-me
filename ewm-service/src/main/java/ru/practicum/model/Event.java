@@ -2,6 +2,7 @@ package ru.practicum.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.dto.Location;
 
 import javax.persistence.*;
 
@@ -32,8 +33,11 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", nullable = false)
     User initiator;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
+    @Embedded
+    @AttributeOverrides(value = {
+            @AttributeOverride(name = "lat", column = @Column(name = "lat")),
+            @AttributeOverride(name = "lon", column = @Column(name = "lon"))
+    })
     Location location;
     @Column(nullable = false)
     Boolean paid;

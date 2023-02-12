@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.UserRequestDto;
+import ru.practicum.dto.NewUserRequest;
+import ru.practicum.dto.UserDto;
 import ru.practicum.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,15 +18,15 @@ public class UserAdminController {
     private final UserService service;
 
     @GetMapping()
-    public ResponseEntity<Object> getAll(@RequestParam(required = false) List<Long> ids,
+    public ResponseEntity<List<UserDto>> getAll(@RequestParam(required = false) List<Long> ids,
                                          @RequestParam(defaultValue = "0") Integer from,
                                          @RequestParam(defaultValue = "10") Integer size) {
         return new ResponseEntity<>(service.getAll(ids, from, size), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<Object> save(@RequestBody UserRequestDto userRequestDto) {
-        return new ResponseEntity<>(service.save(userRequestDto), HttpStatus.CREATED);
+    public ResponseEntity<UserDto> save(@RequestBody @Valid NewUserRequest newUserRequest) {
+        return new ResponseEntity<>(service.save(newUserRequest), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{userId}")

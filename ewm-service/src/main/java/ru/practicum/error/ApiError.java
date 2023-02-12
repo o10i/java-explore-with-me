@@ -5,20 +5,21 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static ru.practicum.mapper.DateTimeMapper.toStringDateTime;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ErrorResponse {
+public class ApiError {
     String status;
     String reason;
     String message;
     String timestamp;
 
-    public ErrorResponse(String status, String reason, String message) {
+    public ApiError(String status, String reason, String message) {
         this.status = status;
         this.reason = reason;
         this.message = message;
-        this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.timestamp = toStringDateTime(LocalDateTime.now());
     }
 }
