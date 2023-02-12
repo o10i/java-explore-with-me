@@ -4,15 +4,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.dto.ViewStats;
-import ru.practicum.model.EndpointHit;
+import ru.practicum.model.Hit;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
+public interface StatsRepository extends JpaRepository<Hit, Long> {
     @Query("SELECT new ru.practicum.dto.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
-            "FROM EndpointHit h " +
+            "FROM Hit h " +
             "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
             "AND h.uri IN (?3) " +
             "GROUP BY h.app, h.uri " +
@@ -21,7 +21,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
     List<ViewStats> findUniqueViewStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("SELECT new ru.practicum.dto.ViewStats(h.app, h.uri, COUNT(h.ip)) " +
-            "FROM EndpointHit h " +
+            "FROM Hit h " +
             "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
             "AND h.uri IN (?3) " +
             "GROUP BY h.app, h.uri " +

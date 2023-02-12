@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.EndpointHitDto;
+import ru.practicum.dto.EndpointHit;
 import ru.practicum.service.StatsService;
 
 import javax.validation.constraints.NotBlank;
@@ -24,9 +24,8 @@ public class StatsController {
     }
 
     @PostMapping("/hit")
-    public ResponseEntity<Void> save(@RequestBody EndpointHitDto endpointHitDto) {
-        service.save(endpointHitDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Object> save(@RequestBody EndpointHit endpointHitDto) {
+        return new ResponseEntity<>(service.save(endpointHitDto), HttpStatus.CREATED);
     }
 }
 

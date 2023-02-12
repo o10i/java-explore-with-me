@@ -1,0 +1,52 @@
+package ru.practicum.model;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import javax.persistence.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "events")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Event {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    @Column(nullable = false)
+    String annotation;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    Category category;
+    @Column
+    Long confirmedRequests;
+    @Column
+    String createdOn;
+    @Column
+    String description;
+    @Column(nullable = false)
+    String eventDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "initiator_id", nullable = false)
+    User initiator;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id", nullable = false)
+    Location location;
+    @Column(nullable = false)
+    Boolean paid;
+    @Column
+    Integer participantLimit;
+    @Column
+    String publishedOn;
+    @Column
+    Boolean requestModeration;
+    @Column
+    String state;
+    @Column(nullable = false)
+    String title;
+    @Column
+    Long views;
+}
