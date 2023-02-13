@@ -1,0 +1,376 @@
+{
+	"info": {
+		"_postman_id": "9d49f333-d8d7-4789-ad35-93f31c8f8d3f",
+		"name": "1. stats-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23412641"
+	},
+	"item": [
+		{
+			"name": "Hit create 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"app\": \"ewm-main-service\",\r\n    \"uri\": \"/events/1\",\r\n    \"ip\": \"73.80.0.87\",\r\n    \"timestamp\": \"2023-02-09 13:50:47\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/hit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hit create 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"app\": \"ewm-main-service\",\r\n    \"uri\": \"/events/2\",\r\n    \"ip\": \"170.140.101.214\",\r\n    \"timestamp\": \"2023-02-09 13:50:47\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/hit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hit create 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"app\": \"ewm-main-service\",\r\n    \"uri\": \"/events/1\",\r\n    \"ip\": \"73.80.0.87\",\r\n    \"timestamp\": \"2023-02-09 13:50:47\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/hit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ViewStats get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"pm.test(\"Test get all ViewStats\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'ViewStats count in total').to.eql(2);\r",
+							"\r",
+							"    pm.expect(jsonData[0].app, 'result[0]: \"app\" field').to.eql('ewm-main-service');\r",
+							"    pm.expect(jsonData[0].uri, 'result[0]: \"uri\" field').to.eql('/events/1');\r",
+							"    pm.expect(jsonData[0].hits, 'result[0]: \"hits\" field').to.eql(2);\r",
+							"\r",
+							"    pm.expect(jsonData[1].app, 'result[1]: \"app\" field').to.eql('ewm-main-service');\r",
+							"    pm.expect(jsonData[1].uri, 'result[1]: \"uri\" field').to.eql('/events/2');\r",
+							"    pm.expect(jsonData[1].hits, 'result[1]: \"hits\" field').to.eql(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stats?start=2020-05-05 00:00:00&end=2035-05-05 00:00:00&uris=/events/1&uris=/events/2",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stats"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2020-05-05 00:00:00"
+						},
+						{
+							"key": "end",
+							"value": "2035-05-05 00:00:00"
+						},
+						{
+							"key": "uris",
+							"value": "/events/1"
+						},
+						{
+							"key": "uris",
+							"value": "/events/2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hit create 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"app\": \"ewm-main-service\",\r\n    \"uri\": \"/events/1\",\r\n    \"ip\": \"73.80.0.87\",\r\n    \"timestamp\": \"2023-02-09 13:50:47\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/hit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hit create 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"app\": \"ewm-main-service\",\r\n    \"uri\": \"/events/2\",\r\n    \"ip\": \"170.140.101.214\",\r\n    \"timestamp\": \"2023-02-09 13:50:47\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/hit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ViewStats get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"pm.test(\"Test get all ViewStats\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'ViewStats count in total').to.eql(2);\r",
+							"\r",
+							"    pm.expect(jsonData[0].app, 'result[0]: \"app\" field').to.eql('ewm-main-service');\r",
+							"    pm.expect(jsonData[0].uri, 'result[0]: \"uri\" field').to.eql('/events/1');\r",
+							"    pm.expect(jsonData[0].hits, 'result[0]: \"hits\" field').to.eql(3);\r",
+							"\r",
+							"    pm.expect(jsonData[1].app, 'result[1]: \"app\" field').to.eql('ewm-main-service');\r",
+							"    pm.expect(jsonData[1].uri, 'result[1]: \"uri\" field').to.eql('/events/2');\r",
+							"    pm.expect(jsonData[1].hits, 'result[1]: \"hits\" field').to.eql(2);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stats?start=2020-05-05 00:00:00&end=2035-05-05 00:00:00&uris=/events/1&uris=/events/2",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stats"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2020-05-05 00:00:00"
+						},
+						{
+							"key": "end",
+							"value": "2035-05-05 00:00:00"
+						},
+						{
+							"key": "uris",
+							"value": "/events/1"
+						},
+						{
+							"key": "uris",
+							"value": "/events/2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:9090",
+			"type": "string"
+		}
+	]
+}
