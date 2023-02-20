@@ -6,11 +6,14 @@ import ru.practicum.common.dto.CompilationDto;
 import ru.practicum.common.dto.NewCompilationDto;
 import ru.practicum.common.model.Compilation;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static ru.practicum.common.mapper.EventMapper.toEventShortDtoList;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CompilationsMapper {
+public final class CompilationMapper {
     public static Compilation toCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = new Compilation();
         compilation.setTitle(newCompilationDto.getTitle());
@@ -24,5 +27,9 @@ public final class CompilationsMapper {
                 toEventShortDtoList(compilation.getEvents()),
                 compilation.getPinned(),
                 compilation.getTitle());
+    }
+
+    public static List<CompilationDto> toCompilationDtoList(List<Compilation> compilations) {
+        return compilations.stream().map(CompilationMapper::toCompilationDto).collect(Collectors.toList());
     }
 }

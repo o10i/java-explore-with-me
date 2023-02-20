@@ -12,8 +12,8 @@ import ru.practicum.common.model.Compilation;
 import ru.practicum.common.repository.CompilationRepository;
 import ru.practicum.common.repository.EventRepository;
 
-import static ru.practicum.common.mapper.CompilationsMapper.toCompilation;
-import static ru.practicum.common.mapper.CompilationsMapper.toCompilationDto;
+import static ru.practicum.common.mapper.CompilationMapper.toCompilation;
+import static ru.practicum.common.mapper.CompilationMapper.toCompilationDto;
 
 @Service
 @RequiredArgsConstructor

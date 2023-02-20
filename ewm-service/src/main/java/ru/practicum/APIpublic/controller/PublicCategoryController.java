@@ -1,7 +1,6 @@
 package ru.practicum.APIpublic.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.APIpublic.service.PublicCategoryService;
@@ -18,11 +17,11 @@ public class PublicCategoryController {
     @GetMapping()
     public ResponseEntity<List<CategoryDto>> getAll(@RequestParam(defaultValue = "0") Integer from,
                                                     @RequestParam(defaultValue = "10") Integer size) {
-        return new ResponseEntity<>(service.getAll(from, size), HttpStatus.OK);
+        return ResponseEntity.ok(service.getAll(from, size));
     }
 
     @GetMapping("/{catId}")
     public ResponseEntity<CategoryDto> getById(@PathVariable Long catId) {
-        return new ResponseEntity<>(service.getById(catId), HttpStatus.OK);
+        return ResponseEntity.ok(service.getById(catId));
     }
 }
