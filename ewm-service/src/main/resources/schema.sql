@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users, categories, events;
+DROP TABLE IF EXISTS users, categories, events, compilations, events_compilations;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -32,4 +32,18 @@ CREATE TABLE IF NOT EXISTS events
     state              VARCHAR(64),
     title              VARCHAR(120)                NOT NULL,
     views              BIGINT
+);
+
+CREATE TABLE IF NOT EXISTS compilations
+(
+    id     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title  VARCHAR(120) NOT NULL UNIQUE,
+    pinned BOOL         NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS events_compilations
+(
+    event_id       BIGINT REFERENCES events (id) ON DELETE CASCADE,
+    compilation_id BIGINT REFERENCES compilations (id) ON DELETE CASCADE,
+    PRIMARY KEY (event_id, compilation_id)
 );

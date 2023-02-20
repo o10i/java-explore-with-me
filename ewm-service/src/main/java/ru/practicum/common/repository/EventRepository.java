@@ -8,6 +8,7 @@ import ru.practicum.common.model.Event;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event>,
         QuerydslPredicateExecutor<Event> {
@@ -15,4 +16,5 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
 
     Optional<Event> findByIdAndInitiatorId(Long eventId, Long initiatorId);
     Optional<Event> findByIdAndState(Long eventId, State state);
+    List<Event> findAllByIdIn(Set<Long> events);
 }

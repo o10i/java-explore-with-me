@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import java.util.Set;
 public class CompilationDto {
     @NotNull
     Long id;
-    Set<EventShortDto> events;
+    List<EventShortDto> events;
     @NotNull
     Boolean pinned;
     @NotBlank
