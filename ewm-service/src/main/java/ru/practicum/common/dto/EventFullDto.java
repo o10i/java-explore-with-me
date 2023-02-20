@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.common.enums.State;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ public class EventFullDto {
     Integer participantLimit;
     String publishedOn;
     Boolean requestModeration;
-    String state;
+    State state;
     @NotBlank
     String title;
     Long views;

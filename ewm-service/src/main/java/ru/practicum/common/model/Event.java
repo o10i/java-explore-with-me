@@ -3,8 +3,10 @@ package ru.practicum.common.model;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.common.dto.Location;
+import ru.practicum.common.enums.State;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,11 +27,11 @@ public class Event {
     @Column
     Long confirmedRequests;
     @Column
-    String createdOn;
+    LocalDateTime createdOn;
     @Column
     String description;
     @Column(nullable = false)
-    String eventDate;
+    LocalDateTime eventDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", nullable = false)
     User initiator;
@@ -44,11 +46,11 @@ public class Event {
     @Column
     Integer participantLimit;
     @Column
-    String publishedOn;
+    LocalDateTime publishedOn;
     @Column
     Boolean requestModeration;
     @Column
-    String state;
+    State state;
     @Column(nullable = false)
     String title;
     @Column

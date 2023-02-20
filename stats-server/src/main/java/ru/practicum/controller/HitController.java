@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class StatsController {
+public class HitController {
     private final HitService service;
 
     @GetMapping("/stats")

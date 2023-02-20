@@ -1,32 +1,36 @@
 package ru.practicum.APIpublic.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-/*import ru.practicum.dto.EventRequestDto;
-import ru.practicum.service.EventService;*/
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.APIpublic.service.PublicEventService;
+import ru.practicum.common.dto.EventFullDto;
+import ru.practicum.common.dto.EventShortDto;
+
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
 public class PublicEventController {
-//    private final EventService service;
+    private final PublicEventService service;
 
-/*    @GetMapping()
-    public ResponseEntity<Object> getAll(@RequestParam(required = false) List<Long> ids,
-                                         @RequestParam(defaultValue = "0") Integer from,
-                                         @RequestParam(defaultValue = "10") Integer size) {
-        return new ResponseEntity<>(service.getAll(ids, from, size), HttpStatus.OK);
+    @GetMapping()
+    public ResponseEntity<List<EventShortDto>> getAllByPublicRequest(@RequestParam(required = false) String text,
+                                                                     @RequestParam(required = false) List<Long> categories,
+                                                                     @RequestParam(required = false) Boolean paid,
+                                                                     @RequestParam(required = false) String rangeStart,
+                                                                     @RequestParam(required = false) String rangeEnd,
+                                                                     @RequestParam(defaultValue = "FALSE") Boolean onlyAvailable,
+                                                                     @RequestParam(required = false) String sort,
+                                                                     @RequestParam(defaultValue = "0") Integer from,
+                                                                     @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(service.getAllByPublicRequest(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size));
     }
 
-    @PostMapping()
-    public ResponseEntity<Object> save(@RequestBody EventRequestDto eventRequestDto) {
-        return new ResponseEntity<>(service.save(eventRequestDto), HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<EventFullDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
-
-    @DeleteMapping("/{eventId}")
-    public ResponseEntity<Void> delete(@PathVariable Long eventId) {
-        service.delete(eventId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }*/
 }

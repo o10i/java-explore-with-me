@@ -5,12 +5,15 @@ import lombok.NoArgsConstructor;
 import ru.practicum.common.dto.EventShortDto;
 import ru.practicum.common.dto.NewEventDto;
 import ru.practicum.common.dto.EventFullDto;
+import ru.practicum.common.enums.State;
 import ru.practicum.common.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.common.mapper.DateTimeMapper.toLocalDateTime;
+import static ru.practicum.common.mapper.DateTimeMapper.toStringDateTime;
 import static ru.practicum.common.mapper.UserMapper.toUserShortDto;
 
 
@@ -19,14 +22,16 @@ public final class EventMapper {
     public static Event toEvent(NewEventDto newEventDto) {
         Event event = new Event();
         event.setAnnotation(newEventDto.getAnnotation());
+        event.setCreatedOn(LocalDateTime.now());
         event.setDescription(newEventDto.getDescription());
-        event.setEventDate(newEventDto.getEventDate());
+        event.setEventDate(toLocalDateTime(newEventDto.getEventDate()));
         event.setLocation(newEventDto.getLocation());
         event.setPaid(newEventDto.getPaid());
         event.setParticipantLimit(newEventDto.getParticipantLimit());
-        event.setPublishedOn(DateTimeMapper.toStringDateTime(LocalDateTime.now()));
+        event.setPublishedOn(toLocalDateTime(DateTimeMapper.toStringDateTime(LocalDateTime.now())));
         event.setRequestModeration(newEventDto.getRequestModeration());
         event.setRequestModeration(newEventDto.getRequestModeration());
+        event.setState(State.PENDING);
         event.setTitle(newEventDto.getTitle());
         return event;
     }
@@ -37,14 +42,14 @@ public final class EventMapper {
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
                 event.getConfirmedRequests(),
-                event.getCreatedOn(),
+                toStringDateTime(event.getCreatedOn()),
                 event.getDescription(),
-                event.getEventDate(),
+                toStringDateTime(event.getEventDate()),
                 toUserShortDto(event.getInitiator()),
                 event.getLocation(),
                 event.getPaid(),
                 event.getParticipantLimit(),
-                event.getPublishedOn(),
+                toStringDateTime(event.getPublishedOn()),
                 event.getRequestModeration(),
                 event.getState(),
                 event.getTitle(),
@@ -61,7 +66,7 @@ public final class EventMapper {
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
                 event.getConfirmedRequests(),
-                event.getEventDate(),
+                toStringDateTime(event.getEventDate()),
                 toUserShortDto(event.getInitiator()),
                 event.getPaid(),
                 event.getTitle(),

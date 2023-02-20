@@ -29,8 +29,8 @@ public class AdminEventController {
     }
 
     @PatchMapping("/{eventId}")
-    public ResponseEntity<EventFullDto> update(@PathVariable Long eventId,
-                                               @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+    public ResponseEntity<EventFullDto> updateByAdmin(@PathVariable Long eventId,
+                                                      @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
         return ResponseEntity.ok(service.updateByAdmin(eventId, updateEventAdminRequest));
     }
 }

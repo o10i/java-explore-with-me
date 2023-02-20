@@ -7,7 +7,6 @@ import ru.practicum.common.dto.*;
 import ru.practicum.common.enums.UserStateAction;
 import ru.practicum.common.exception.ForbiddenException;
 import ru.practicum.common.exception.NotFoundException;
-import ru.practicum.common.mapper.DateTimeMapper;
 import ru.practicum.common.mapper.EventMapper;
 import ru.practicum.common.model.Event;
 import ru.practicum.common.repository.CategoryRepository;
@@ -17,6 +16,8 @@ import ru.practicum.common.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.common.mapper.DateTimeMapper.toLocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +62,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private void checkEventDateByInitiator(String eventDate) {
-        LocalDateTime dateTime = DateTimeMapper.toLocalDateTime(eventDate);
+        LocalDateTime dateTime = toLocalDateTime(eventDate);
         if (dateTime.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ForbiddenException("Field: eventDate. Error: должно содержать дату, которая еще не наступила. Value: " + dateTime);
         }
@@ -94,7 +95,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         if (description != null) {
             event.setAnnotation(description);
         }
-        event.setEventDate(eventDate);
+        event.setEventDate(toLocalDateTime(eventDate));
         if (location != null) {
             event.setLocation(location);
         }

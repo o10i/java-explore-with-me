@@ -1,5 +1,6 @@
 package ru.practicum.APIadmin.service;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,14 +9,19 @@ import ru.practicum.common.dto.Location;
 import ru.practicum.common.dto.UpdateEventAdminRequest;
 import ru.practicum.common.exception.ForbiddenException;
 import ru.practicum.common.exception.NotFoundException;
-import ru.practicum.common.mapper.DateTimeMapper;
 import ru.practicum.common.mapper.EventMapper;
 import ru.practicum.common.model.Event;
+import ru.practicum.common.model.QEvent;
 import ru.practicum.common.repository.EventRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static ru.practicum.common.mapper.DateTimeMapper.toLocalDateTime;
+import static ru.practicum.common.mapper.EventMapper.toEventFullDtoList;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +33,38 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public List<EventFullDto> getAllByAdminRequest(List<Long> users, List<String> states, List<Long> categories,
                                                    String rangeStart, String rangeEnd, Integer from, Integer size) {
-        return EventMapper.toEventFullDtoList(repository.findAllByAdminRequest(users, states, categories, rangeStart, rangeEnd)
-                .stream().skip(from).limit(size).collect(Collectors.toList()));
+        QEvent event = QEvent.event;
+        List<BooleanExpression> conditions = new ArrayList<>();
+
+        if (users != null && !users.isEmpty()) {
+            conditions.add(event.initiator.id.in(users));
+        }
+        if (states != null && !states.isEmpty()) {
+            conditions.add(event.state.in(states));
+        }
+        if (categories != null && !categories.isEmpty()) {
+            conditions.add(event.category.id.in(categories));
+        }
+        if (rangeStart != null && !rangeStart.isEmpty()) {
+            conditions.add(event.eventDate.after(toLocalDateTime(rangeStart)));
+        }
+        if (rangeEnd != null && !rangeEnd.isEmpty()) {
+            conditions.add(event.eventDate.before(toLocalDateTime(rangeEnd)));
+        }
+
+        List<Event> events;
+        if (conditions.isEmpty()) {
+            events = repository.findAll();
+        } else {
+            BooleanExpression expression = conditions.stream()
+                    .reduce(BooleanExpression::and)
+                    .get();
+
+            events = StreamSupport.stream(repository.findAll(expression).spliterator(), false)
+                    .collect(Collectors.toList());
+        }
+
+        return toEventFullDtoList(events).stream().skip(from).limit(size).collect(Collectors.toList());
     }
 
     @Transactional
@@ -46,8 +82,8 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     private void checkEventDateByAdmin(Event event) {
-        LocalDateTime eventDate = DateTimeMapper.toLocalDateTime(event.getEventDate());
-        LocalDateTime publishedOn = DateTimeMapper.toLocalDateTime(event.getPublishedOn());
+        LocalDateTime eventDate = event.getEventDate();
+        LocalDateTime publishedOn = event.getPublishedOn();
 
         if (eventDate.isBefore(publishedOn.plusHours(1))) {
             throw new ForbiddenException("Field: eventDate. Error: должно содержать дату не ранее чем за час от даты публикации. Value: " + eventDate);
@@ -74,7 +110,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         if (description != null) {
             event.setAnnotation(description);
         }
-        event.setEventDate(eventDate);
+        event.setEventDate(toLocalDateTime(eventDate));
         if (location != null) {
             event.setLocation(location);
         }
