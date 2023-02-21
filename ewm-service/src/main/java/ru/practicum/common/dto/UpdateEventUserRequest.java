@@ -20,7 +20,7 @@ public class UpdateEventUserRequest {
     String eventDate;
     Location location;
     Boolean paid;
-    Integer participantLimit;
+    Long participantLimit;
     Boolean requestModeration;
     String stateAction;
     @Length(min = 3, max = 120)

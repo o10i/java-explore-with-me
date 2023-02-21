@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users, categories, events, compilations, events_compilations;
+DROP TABLE IF EXISTS users, categories, events, compilations, events_compilations, requests;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS events
     lat                REAL                        NOT NULL,
     lon                REAL                        NOT NULL,
     paid               BOOL                        NOT NULL,
-    participant_limit  INTEGER,
+    participant_limit  BIGINT,
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     request_moderation BOOL,
     state              VARCHAR(64),
@@ -46,4 +46,14 @@ CREATE TABLE IF NOT EXISTS events_compilations
     event_id       BIGINT REFERENCES events (id) ON DELETE CASCADE,
     compilation_id BIGINT REFERENCES compilations (id) ON DELETE CASCADE,
     PRIMARY KEY (event_id, compilation_id)
+);
+
+CREATE TABLE IF NOT EXISTS requests
+(
+    id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    event_id     BIGINT NOT NULL REFERENCES events (id),
+    requester_id BIGINT NOT NULL REFERENCES users (id),
+    created      TIMESTAMP WITHOUT TIME ZONE,
+    status       VARCHAR(10),
+    UNIQUE (event_id, requester_id)
 );

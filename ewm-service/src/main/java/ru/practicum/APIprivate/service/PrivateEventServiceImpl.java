@@ -28,8 +28,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepository userRepository;
 
     @Override
-    public List<EventShortDto> getAllByInitiatorId(Long initiatorId, Integer from, Integer size) {
-        return EventMapper.toEventShortDtoList(repository.findAllByInitiatorId(initiatorId)
+    public List<EventShortDto> getAllByInitiatorId(Long userId, Integer from, Integer size) {
+        return EventMapper.toEventShortDtoList(repository.findAllByInitiatorId(userId)
                 .stream().skip(from).limit(size).collect(Collectors.toList()));
     }
 
@@ -46,17 +46,17 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    public EventFullDto getByIdAndInitiatorId(Long eventId, Long initiatorId) {
-        return EventMapper.toEventFullDto(getByIdAndInitiatorIdWithCheck(eventId, initiatorId));
+    public EventFullDto getByIdAndInitiatorId(Long eventId, Long userId) {
+        return EventMapper.toEventFullDto(getByIdAndInitiatorIdWithCheck(eventId, userId));
     }
 
     @Transactional
     @Override
-    public EventFullDto updateByInitiator(Long eventId, Long initiatorId, UpdateEventUserRequest updateEventUserRequest) {
+    public EventFullDto updateByInitiator(Long eventId, Long userId, UpdateEventUserRequest updateEventUserRequest) {
         checkStateActionByInitiator(updateEventUserRequest.getStateAction());
         checkEventDateByInitiator(updateEventUserRequest.getEventDate());
 
-        Event event = getByIdAndInitiatorIdWithCheck(eventId, initiatorId);
+        Event event = getByIdAndInitiatorIdWithCheck(eventId, userId);
         updateEventByInitiator(updateEventUserRequest, event);
         return EventMapper.toEventFullDto(repository.save(event));
     }
@@ -81,7 +81,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         String eventDate = updateEventUserRequest.getEventDate();
         Location location = updateEventUserRequest.getLocation();
         Boolean paid = updateEventUserRequest.getPaid();
-        Integer participantLimit = updateEventUserRequest.getParticipantLimit();
+        Long participantLimit = updateEventUserRequest.getParticipantLimit();
         Boolean requestModeration = updateEventUserRequest.getRequestModeration();
         String title = updateEventUserRequest.getTitle();
 

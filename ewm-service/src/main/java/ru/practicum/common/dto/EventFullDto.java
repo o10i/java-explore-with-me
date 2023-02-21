@@ -31,7 +31,7 @@ public class EventFullDto {
     Location location;
     @NotNull
     Boolean paid;
-    Integer participantLimit;
+    Long participantLimit;
     String publishedOn;
     Boolean requestModeration;
     State state;

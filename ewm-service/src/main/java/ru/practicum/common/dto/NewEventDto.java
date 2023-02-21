@@ -26,7 +26,7 @@ public class NewEventDto {
     @NotNull
     Location location;
     Boolean paid;
-    Integer participantLimit;
+    Long participantLimit;
     Boolean requestModeration;
     @Length(min = 3, max = 120)
     String title;

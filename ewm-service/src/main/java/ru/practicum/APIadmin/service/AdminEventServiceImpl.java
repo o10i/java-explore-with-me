@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static ru.practicum.common.enums.AdminStateAction.PUBLISH_EVENT;
+import static ru.practicum.common.enums.AdminStateAction.REJECT_EVENT;
+import static ru.practicum.common.enums.State.CANCELED;
+import static ru.practicum.common.enums.State.PUBLISHED;
 import static ru.practicum.common.mapper.DateTimeMapper.toLocalDateTime;
 import static ru.practicum.common.mapper.EventMapper.toEventFullDtoList;
 
@@ -97,9 +101,10 @@ public class AdminEventServiceImpl implements AdminEventService {
         String eventDate = updateEventAdminRequest.getEventDate();
         Location location = updateEventAdminRequest.getLocation();
         Boolean paid = updateEventAdminRequest.getPaid();
-        Integer participantLimit = updateEventAdminRequest.getParticipantLimit();
+        Long participantLimit = updateEventAdminRequest.getParticipantLimit();
         Boolean requestModeration = updateEventAdminRequest.getRequestModeration();
         String title = updateEventAdminRequest.getTitle();
+        String stateAction = updateEventAdminRequest.getStateAction();
 
         if (annotation != null) {
             event.setAnnotation(annotation);
@@ -125,6 +130,12 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
         if (title != null) {
             event.setTitle(title);
+        }
+        if (stateAction.equals(PUBLISH_EVENT.toString())) {
+            event.setState(PUBLISHED);
+        }
+        if (stateAction.equals(REJECT_EVENT.toString())) {
+            event.setState(CANCELED);
         }
     }
 }

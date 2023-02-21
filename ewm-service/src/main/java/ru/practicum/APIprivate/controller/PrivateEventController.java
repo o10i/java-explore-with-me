@@ -15,33 +15,33 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/users/{userId}/events")
 public class PrivateEventController {
     private final PrivateEventService service;
 
-    @GetMapping("/{initiatorId}/events")
-    public ResponseEntity<List<EventShortDto>> getAllByInitiatorId(@PathVariable Long initiatorId,
+    @GetMapping("")
+    public ResponseEntity<List<EventShortDto>> getAllByInitiatorId(@PathVariable Long userId,
                                                                    @RequestParam(defaultValue = "0") Integer from,
                                                                    @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(service.getAllByInitiatorId(initiatorId, from, size));
+        return ResponseEntity.ok(service.getAllByInitiatorId(userId, from, size));
     }
 
-    @PostMapping("/{userId}/events")
+    @PostMapping()
     public ResponseEntity<EventFullDto> save(@PathVariable Long userId,
                                              @RequestBody @Valid NewEventDto newEventDto) {
         return new ResponseEntity<>(service.save(userId, newEventDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{initiatorId}/events/{eventId}")
-    public ResponseEntity<EventFullDto> getByIdAndInitiatorId(@PathVariable Long initiatorId,
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventFullDto> getByIdAndInitiatorId(@PathVariable Long userId,
                                                               @PathVariable Long eventId) {
-        return new ResponseEntity<>(service.getByIdAndInitiatorId(eventId, initiatorId), HttpStatus.OK);
+        return new ResponseEntity<>(service.getByIdAndInitiatorId(eventId, userId), HttpStatus.OK);
     }
 
-    @PatchMapping("/{initiatorId}/events/{eventId}")
-    public ResponseEntity<EventFullDto> updateByInitiator(@PathVariable Long initiatorId,
+    @PatchMapping("{eventId}")
+    public ResponseEntity<EventFullDto> updateByInitiator(@PathVariable Long userId,
                                                           @PathVariable Long eventId,
                                                           @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
-        return ResponseEntity.ok(service.updateByInitiator(eventId, initiatorId, updateEventUserRequest));
+        return ResponseEntity.ok(service.updateByInitiator(eventId, userId, updateEventUserRequest));
     }
 }

@@ -1,4 +1,13 @@
 package ru.practicum.common.repository;
 
-public interface RequestRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.common.model.Request;
+
+import java.util.List;
+import java.util.Optional;
+
+
+public interface RequestRepository extends JpaRepository<Request, Long> {
+    List<Request> findAllByRequesterId(Long requesterId);
+    Optional<Request> findByIdAndRequesterId(Long eventId, Long requesterId);
 }

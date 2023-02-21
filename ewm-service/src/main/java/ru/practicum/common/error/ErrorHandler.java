@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.common.exception.BadRequestException;
+import ru.practicum.common.exception.ConflictException;
 import ru.practicum.common.exception.NotFoundException;
 import ru.practicum.common.exception.ForbiddenException;
 
@@ -61,6 +62,16 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleBlankException(final PSQLException e) {
+        log.error(e.getLocalizedMessage(), e.getMessage());
+        return new ApiError(
+                "CONFLICT",
+                "Integrity constraint has been violated.",
+                e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleForbiddenException(final ConflictException e) {
         log.error(e.getLocalizedMessage(), e.getMessage());
         return new ApiError(
                 "CONFLICT",
