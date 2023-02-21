@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.APIadmin.service.AdminEventService;
 import ru.practicum.ewm.common.dto.EventFullDto;
 import ru.practicum.ewm.common.dto.UpdateEventAdminRequest;
+import ru.practicum.ewm.common.enums.State;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AdminEventController {
 
     @GetMapping()
     public ResponseEntity<List<EventFullDto>> getAllByAdminRequest(@RequestParam(required = false) List<Long> users,
-                                                                   @RequestParam(required = false) List<String> states,
+                                                                   @RequestParam(required = false) List<State> states,
                                                                    @RequestParam(required = false) List<Long> categories,
                                                                    @RequestParam(required = false) String rangeStart,
                                                                    @RequestParam(required = false) String rangeEnd,

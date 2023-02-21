@@ -5,7 +5,7 @@ import ru.practicum.dto.ViewStats;
 
 import java.util.List;
 
-public interface HitService {
+public interface StatsService {
     EndpointHit save(EndpointHit endpointHitDto);
 
     List<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique);

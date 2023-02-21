@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.ewm.common.mapper.CategoryMapper.*;
 import static ru.practicum.ewm.common.mapper.DateTimeMapper.toLocalDateTime;
 import static ru.practicum.ewm.common.mapper.DateTimeMapper.toStringDateTime;
 import static ru.practicum.ewm.common.mapper.UserMapper.toUserShortDto;
@@ -39,7 +40,7 @@ public final class EventMapper {
         return new EventFullDto(
                 event.getId(),
                 event.getAnnotation(),
-                CategoryMapper.toCategoryDto(event.getCategory()),
+                toCategoryDto(event.getCategory()),
                 event.getConfirmedRequests(),
                 toStringDateTime(event.getCreatedOn()),
                 event.getDescription(),
@@ -52,7 +53,7 @@ public final class EventMapper {
                 event.getRequestModeration(),
                 event.getState(),
                 event.getTitle(),
-                event.getViews());
+                event.getViews()); // вопрос
     }
 
     public static List<EventFullDto> toEventFullDtoList(List<Event> events) {
@@ -63,7 +64,7 @@ public final class EventMapper {
         return new EventShortDto(
                 event.getId(),
                 event.getAnnotation(),
-                CategoryMapper.toCategoryDto(event.getCategory()),
+                toCategoryDto(event.getCategory()),
                 event.getConfirmedRequests(),
                 toStringDateTime(event.getEventDate()),
                 toUserShortDto(event.getInitiator()),

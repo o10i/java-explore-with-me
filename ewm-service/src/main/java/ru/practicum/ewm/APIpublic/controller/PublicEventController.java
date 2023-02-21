@@ -7,6 +7,7 @@ import ru.practicum.ewm.APIpublic.service.PublicEventService;
 import ru.practicum.ewm.common.dto.EventFullDto;
 import ru.practicum.ewm.common.dto.EventShortDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -25,12 +26,15 @@ public class PublicEventController {
                                                                      @RequestParam(defaultValue = "FALSE") Boolean onlyAvailable,
                                                                      @RequestParam(required = false) String sort,
                                                                      @RequestParam(defaultValue = "0") Integer from,
-                                                                     @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(service.getAllByPublicRequest(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size));
+                                                                     @RequestParam(defaultValue = "10") Integer size,
+                                                                     HttpServletRequest request) {
+        return ResponseEntity.ok(service.getAllByPublicRequest(text, categories, paid, rangeStart, rangeEnd,
+                onlyAvailable, sort, from, size, request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventFullDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<EventFullDto> getById(@PathVariable Long id,
+                                                HttpServletRequest request) {
+        return ResponseEntity.ok(service.getById(id, request));
     }
 }

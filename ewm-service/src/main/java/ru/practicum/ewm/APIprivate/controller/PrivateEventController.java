@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.APIprivate.service.PrivateEventService;
-import ru.practicum.ewm.common.dto.EventFullDto;
-import ru.practicum.ewm.common.dto.EventShortDto;
-import ru.practicum.ewm.common.dto.NewEventDto;
-import ru.practicum.ewm.common.dto.UpdateEventUserRequest;
+import ru.practicum.ewm.common.dto.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,7 +29,7 @@ public class PrivateEventController {
         return new ResponseEntity<>(service.save(userId, newEventDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{eventId}")
+    @GetMapping("{eventId}")
     public ResponseEntity<EventFullDto> getByIdAndInitiatorId(@PathVariable Long userId,
                                                               @PathVariable Long eventId) {
         return new ResponseEntity<>(service.getByIdAndInitiatorId(eventId, userId), HttpStatus.OK);
@@ -43,5 +40,18 @@ public class PrivateEventController {
                                                           @PathVariable Long eventId,
                                                           @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
         return ResponseEntity.ok(service.updateByInitiator(eventId, userId, updateEventUserRequest));
+    }
+
+    @GetMapping("{eventId}/requests")
+    public ResponseEntity<List<ParticipationRequestDto>> getRequestsByEventIdAndInitiatorId(@PathVariable Long userId,
+                                                                                      @PathVariable Long eventId) {
+        return new ResponseEntity<>(service.getRequestsByEventIdAndInitiatorId(eventId, userId), HttpStatus.OK);
+    }
+
+    @PatchMapping("{eventId}/requests")
+    public ResponseEntity<EventRequestStatusUpdateResult> updateRequestStatusByInitiator(@PathVariable Long userId,
+                                                                                         @PathVariable Long eventId,
+                                                                                         @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
+        return ResponseEntity.ok(service.updateRequestStatusByInitiator(eventId, userId, eventRequestStatusUpdateRequest));
     }
 }

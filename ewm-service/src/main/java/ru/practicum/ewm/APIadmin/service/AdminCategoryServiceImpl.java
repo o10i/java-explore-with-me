@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.dto.CategoryDto;
 import ru.practicum.ewm.common.dto.NewCategoryDto;
+import ru.practicum.ewm.common.exception.BadRequestException;
 import ru.practicum.ewm.common.exception.NotFoundException;
 import ru.practicum.ewm.common.mapper.CategoryMapper;
 import ru.practicum.ewm.common.model.Category;
@@ -33,6 +34,9 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     @Override
     public CategoryDto update(NewCategoryDto newCategoryDto, Long catId) {
         Category category = getByIdWithCheck(catId);
+        if (newCategoryDto.getName() == null) {
+            throw new BadRequestException("Field: name. Error: must not be blank. Value: null");
+        }
         category.setName(newCategoryDto.getName());
         return CategoryMapper.toCategoryDto(repository.save(category));
     }

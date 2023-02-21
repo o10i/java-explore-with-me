@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.dto.NewUserRequest;
 import ru.practicum.ewm.common.dto.UserDto;
+import ru.practicum.ewm.common.exception.BadRequestException;
 import ru.practicum.ewm.common.exception.NotFoundException;
 import ru.practicum.ewm.common.repository.UserRepository;
 
@@ -31,6 +32,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     @Override
     public UserDto save(NewUserRequest newUserRequest) {
+        if (newUserRequest.getName() == null) {
+            throw new BadRequestException("Field: name. Error: must not be blank. Value: null");
+        }
         return toUserDto(repository.save(toUser(newUserRequest)));
     }
 

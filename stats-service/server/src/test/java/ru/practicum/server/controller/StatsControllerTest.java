@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.dto.ViewStats;
-import ru.practicum.server.service.HitService;
+import ru.practicum.server.service.StatsService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -20,24 +20,24 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(controllers = HitController.class)
-class HitControllerTest {
+@WebMvcTest(controllers = StatsController.class)
+class StatsControllerTest {
     @Autowired
     ObjectMapper mapper;
     @MockBean
-    HitService service;
+    StatsService service;
     @Autowired
     MockMvc mvc;
 
     @SneakyThrows
     @Test
     void save() {
-        EndpointHit endpointHitDto = new EndpointHit(1L,"ewm-main-service", "/events/1", "73.80.0.87", "2023-02-09 13:50:47");
+        EndpointHit endpointHitDto = new EndpointHit(1L,"ewm-service", "/events/1", "73.80.0.87", "2023-02-09 13:50:47");
 
         mvc.perform(MockMvcRequestBuilders.post("/hit")
                         .content(mapper.writeValueAsString(endpointHitDto))
@@ -50,7 +50,7 @@ class HitControllerTest {
     @SneakyThrows
     @Test
     void getStats() {
-        ViewStats viewStats = new ViewStats("ewm-main-service", "/events/1", 1L);
+        ViewStats viewStats = new ViewStats("ewm-service", "/events/1", 1L);
         when(service.getStats(any(), any(), any(), any())).thenReturn(List.of(viewStats));
 
         mvc.perform(get("/stats")

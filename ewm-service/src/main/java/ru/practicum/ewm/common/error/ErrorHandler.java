@@ -20,6 +20,16 @@ import java.util.Objects;
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleBlankException(final BadRequestException e) {
+        log.error(e.getLocalizedMessage(), e.getMessage());
+        return new ApiError(
+                "BAD_REQUEST",
+                "Incorrectly made request.",
+                e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
         log.error(e.getLocalizedMessage(), e.getMessage());
         return new ApiError(
@@ -37,16 +47,6 @@ public class ErrorHandler {
                 "BAD_REQUEST",
                 "Incorrectly made request.",
                 String.format("Field: %s. Error: must not be blank. Value: %s", field, e.getFieldValue(field)));
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleBlankException(final BadRequestException e) {
-        log.error(e.getLocalizedMessage(), e.getMessage());
-        return new ApiError(
-                "BAD_REQUEST",
-                "Incorrectly made request.",
-                e.getMessage());
     }
 
     @ExceptionHandler

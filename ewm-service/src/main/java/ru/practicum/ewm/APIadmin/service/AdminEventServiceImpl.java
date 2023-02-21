@@ -5,8 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.dto.EventFullDto;
-import ru.practicum.ewm.common.dto.Location;
 import ru.practicum.ewm.common.dto.UpdateEventAdminRequest;
+import ru.practicum.ewm.common.enums.State;
+import ru.practicum.ewm.common.exception.ConflictException;
 import ru.practicum.ewm.common.exception.ForbiddenException;
 import ru.practicum.ewm.common.exception.NotFoundException;
 import ru.practicum.ewm.common.mapper.EventMapper;
@@ -22,8 +23,7 @@ import java.util.stream.StreamSupport;
 
 import static ru.practicum.ewm.common.enums.AdminStateAction.PUBLISH_EVENT;
 import static ru.practicum.ewm.common.enums.AdminStateAction.REJECT_EVENT;
-import static ru.practicum.ewm.common.enums.State.CANCELED;
-import static ru.practicum.ewm.common.enums.State.PUBLISHED;
+import static ru.practicum.ewm.common.enums.State.*;
 import static ru.practicum.ewm.common.mapper.DateTimeMapper.toLocalDateTime;
 import static ru.practicum.ewm.common.mapper.EventMapper.toEventFullDtoList;
 
@@ -35,7 +35,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final AdminCategoryServiceImpl categoryService;
 
     @Override
-    public List<EventFullDto> getAllByAdminRequest(List<Long> users, List<String> states, List<Long> categories,
+    public List<EventFullDto> getAllByAdminRequest(List<Long> users, List<State> states, List<Long> categories,
                                                    String rangeStart, String rangeEnd, Integer from, Integer size) {
         QEvent event = QEvent.event;
         List<BooleanExpression> conditions = new ArrayList<>();
@@ -75,8 +75,13 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public EventFullDto updateByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         Event event = getByIdWithCheck(eventId);
+
         checkEventDateByAdmin(event);
+
+        setStateByAdmin(eventId, updateEventAdminRequest, event);
+
         updateEventByAdmin(updateEventAdminRequest, event);
+
         return EventMapper.toEventFullDto(repository.save(event));
     }
 
@@ -94,48 +99,48 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
     }
 
-    private void updateEventByAdmin(UpdateEventAdminRequest updateEventAdminRequest, Event event) {
-        String annotation = updateEventAdminRequest.getAnnotation();
-        Long category = updateEventAdminRequest.getCategory();
-        String description = updateEventAdminRequest.getDescription();
-        String eventDate = updateEventAdminRequest.getEventDate();
-        Location location = updateEventAdminRequest.getLocation();
-        Boolean paid = updateEventAdminRequest.getPaid();
-        Long participantLimit = updateEventAdminRequest.getParticipantLimit();
-        Boolean requestModeration = updateEventAdminRequest.getRequestModeration();
-        String title = updateEventAdminRequest.getTitle();
-        String stateAction = updateEventAdminRequest.getStateAction();
-
-        if (annotation != null) {
-            event.setAnnotation(annotation);
-        }
-        if (category != null) {
-            event.setCategory(categoryService.getByIdWithCheck(category));
-        }
-        if (description != null) {
-            event.setAnnotation(description);
-        }
-        event.setEventDate(toLocalDateTime(eventDate));
-        if (location != null) {
-            event.setLocation(location);
-        }
-        if (paid != null) {
-            event.setPaid(paid);
-        }
-        if (participantLimit != null) {
-            event.setParticipantLimit(participantLimit);
-        }
-        if (requestModeration != null) {
-            event.setRequestModeration(requestModeration);
-        }
-        if (title != null) {
-            event.setTitle(title);
-        }
-        if (stateAction.equals(PUBLISH_EVENT.toString())) {
+    private void setStateByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest, Event event) {
+        if (updateEventAdminRequest.getStateAction().equals(PUBLISH_EVENT.toString())) {
+            if (!event.getState().equals(PENDING)) {
+                throw new ConflictException(String.format("Event with id=%d is not PENDING", eventId));
+            }
             event.setState(PUBLISHED);
         }
-        if (stateAction.equals(REJECT_EVENT.toString())) {
+        if (updateEventAdminRequest.getStateAction().equals(REJECT_EVENT.toString())) {
+            if (event.getState().equals(PUBLISHED)) {
+                throw new ConflictException(String.format("Event with id=%d is PUBLISHED", eventId));
+            }
             event.setState(CANCELED);
+        }
+    }
+
+    private void updateEventByAdmin(UpdateEventAdminRequest updateEventAdminRequest, Event event) {
+        if (updateEventAdminRequest.getAnnotation() != null) {
+            event.setAnnotation(updateEventAdminRequest.getAnnotation());
+        }
+        if (updateEventAdminRequest.getCategory() != null) {
+            event.setCategory(categoryService.getByIdWithCheck(updateEventAdminRequest.getCategory()));
+        }
+        if (updateEventAdminRequest.getDescription() != null) {
+            event.setAnnotation(updateEventAdminRequest.getDescription());
+        }
+        if (updateEventAdminRequest.getEventDate() != null) {
+            event.setEventDate(toLocalDateTime(updateEventAdminRequest.getEventDate()));
+        }
+        if (updateEventAdminRequest.getLocation() != null) {
+            event.setLocation(updateEventAdminRequest.getLocation());
+        }
+        if (updateEventAdminRequest.getPaid() != null) {
+            event.setPaid(updateEventAdminRequest.getPaid());
+        }
+        if (updateEventAdminRequest.getParticipantLimit() != null) {
+            event.setParticipantLimit(updateEventAdminRequest.getParticipantLimit());
+        }
+        if (updateEventAdminRequest.getRequestModeration() != null) {
+            event.setRequestModeration(updateEventAdminRequest.getRequestModeration());
+        }
+        if (updateEventAdminRequest.getTitle() != null) {
+            event.setTitle(updateEventAdminRequest.getTitle());
         }
     }
 }

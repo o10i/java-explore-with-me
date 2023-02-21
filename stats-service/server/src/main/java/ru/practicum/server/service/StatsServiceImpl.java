@@ -19,7 +19,7 @@ import static ru.practicum.server.mapper.HitMapper.toEndpointHit;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class HitServiceImpl implements HitService {
+public class StatsServiceImpl implements StatsService {
     private final HitRepository repository;
 
     private static LocalDateTime getDateTime(String dateTime) {

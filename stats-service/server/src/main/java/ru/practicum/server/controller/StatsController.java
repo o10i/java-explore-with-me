@@ -6,15 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.dto.ViewStats;
-import ru.practicum.server.service.HitService;
+import ru.practicum.server.service.StatsService;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class HitController {
-    private final HitService service;
+public class StatsController {
+    private final StatsService service;
 
     @GetMapping("/stats")
     public ResponseEntity<List<ViewStats>> getStats(@RequestParam @NotBlank String start,
