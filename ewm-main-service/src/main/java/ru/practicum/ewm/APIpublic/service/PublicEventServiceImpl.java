@@ -13,8 +13,8 @@ import ru.practicum.dto.ViewStats;
 import ru.practicum.ewm.common.dto.EventFullDto;
 import ru.practicum.ewm.common.dto.EventShortDto;
 import ru.practicum.ewm.common.enums.EventSort;
-import ru.practicum.ewm.common.enums.State;
 import ru.practicum.ewm.common.exception.BadRequestException;
+import ru.practicum.ewm.common.exception.ForbiddenException;
 import ru.practicum.ewm.common.exception.NotFoundException;
 import ru.practicum.ewm.common.model.Event;
 import ru.practicum.ewm.common.model.QEvent;
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static ru.practicum.ewm.common.enums.State.PUBLISHED;
 import static ru.practicum.ewm.common.mapper.DateTimeMapper.toLocalDateTime;
 import static ru.practicum.ewm.common.mapper.DateTimeMapper.toStringDateTime;
 import static ru.practicum.ewm.common.mapper.EventMapper.toEventFullDto;
@@ -89,6 +90,7 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .get();
 
         List<Event> events = StreamSupport.stream(repository.findAll(expression, sortBy).spliterator(), false)
+                .filter(event1 -> event1.getState().equals(PUBLISHED))
                 .skip(from).limit(size)
                 .collect(Collectors.toList());
 
@@ -105,12 +107,20 @@ public class PublicEventServiceImpl implements PublicEventService {
     public EventFullDto getById(Long id, HttpServletRequest request) {
         hitClient.save(toEndpointHit(request));
 
-        Event event = repository.findByIdAndState(id, State.PUBLISHED)
-                .orElseThrow(() -> new NotFoundException(String.format("Published event with id=%d was not found", id)));
+        Event event = getByIdWithCheck(id);
+
+        if (!event.getState().equals(PUBLISHED)) {
+            throw new ForbiddenException(String.format("Event with id=%d is not published", id));
+        }
 
         event.setViews(getEventViews(event));
 
         return toEventFullDto(event);
+    }
+
+    private Event getByIdWithCheck(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Event with id=%d was not found", id)));
     }
 
     private Long getEventViews(Event event) {

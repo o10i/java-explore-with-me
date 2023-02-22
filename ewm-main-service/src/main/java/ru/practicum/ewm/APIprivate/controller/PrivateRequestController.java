@@ -21,16 +21,16 @@ public class PrivateRequestController {
     }
 
     @PostMapping()
-    public ResponseEntity<ParticipationRequestDto> save(@PathVariable Long userId,
-                                                        @RequestParam Long eventId) {
-        return new ResponseEntity<>(service.save(userId, eventId), HttpStatus.CREATED);
+    public ResponseEntity<ParticipationRequestDto> sendRequest(@PathVariable Long userId,
+                                                               @RequestParam Long eventId) {
+        return new ResponseEntity<>(service.sendRequest(userId, eventId), HttpStatus.CREATED);
     }
 
 
-    @PatchMapping("/{requestId}/cancel")
+    @PatchMapping("/{eventId}/cancel")
     public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable Long userId,
-                                                                 @PathVariable Long requestId) {
-        return ResponseEntity.ok(service.cancelRequest(userId, requestId));
+                                                                 @PathVariable Long eventId) {
+        return ResponseEntity.ok(service.cancelRequest(userId, eventId));
     }
 
 }

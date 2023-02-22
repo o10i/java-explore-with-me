@@ -7,7 +7,7 @@ import java.util.List;
 public interface PrivateRequestService {
     List<ParticipationRequestDto> getAllByUserId(Long userId);
 
-    ParticipationRequestDto save(Long userId, Long eventId);
+    ParticipationRequestDto sendRequest(Long userId, Long eventId);
 
-    ParticipationRequestDto cancelRequest(Long userId, Long requestId);
+    ParticipationRequestDto cancelRequest(Long userId, Long eventId);
 }

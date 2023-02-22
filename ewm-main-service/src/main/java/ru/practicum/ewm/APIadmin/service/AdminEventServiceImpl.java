@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.dto.EventFullDto;
 import ru.practicum.ewm.common.dto.UpdateEventAdminRequest;
 import ru.practicum.ewm.common.enums.State;
-import ru.practicum.ewm.common.exception.ConflictException;
 import ru.practicum.ewm.common.exception.ForbiddenException;
 import ru.practicum.ewm.common.exception.NotFoundException;
 import ru.practicum.ewm.common.mapper.EventMapper;
@@ -76,9 +75,9 @@ public class AdminEventServiceImpl implements AdminEventService {
     public EventFullDto updateByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         Event event = getByIdWithCheck(eventId);
 
-        checkEventDateByAdmin(event);
+        checkEventDateByAdmin(event, updateEventAdminRequest);
 
-        setStateByAdmin(eventId, updateEventAdminRequest, event);
+        setStateByAdmin(updateEventAdminRequest, event);
 
         updateEventByAdmin(updateEventAdminRequest, event);
 
@@ -90,25 +89,27 @@ public class AdminEventServiceImpl implements AdminEventService {
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%d was not found", eventId)));
     }
 
-    private void checkEventDateByAdmin(Event event) {
-        LocalDateTime eventDate = event.getEventDate();
-        LocalDateTime publishedOn = event.getPublishedOn();
+    private void checkEventDateByAdmin(Event event, UpdateEventAdminRequest updateEventAdminRequest) {
+        if (updateEventAdminRequest.getEventDate() != null) {
+            LocalDateTime eventDate = toLocalDateTime(updateEventAdminRequest.getEventDate());
+            LocalDateTime publishedOn = event.getPublishedOn();
 
-        if (eventDate.isBefore(publishedOn.plusHours(1))) {
-            throw new ForbiddenException("Field: eventDate. Error: должно содержать дату не ранее чем за час от даты публикации. Value: " + eventDate);
+            if (eventDate.isBefore(publishedOn.plusHours(1)) || eventDate.isBefore(LocalDateTime.now())) {
+                throw new ForbiddenException("Field: eventDate. Error: должно содержать дату не ранее чем за час от даты публикации. Value: " + eventDate);
+            }
         }
     }
 
-    private void setStateByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest, Event event) {
+    private void setStateByAdmin(UpdateEventAdminRequest updateEventAdminRequest, Event event) {
         if (updateEventAdminRequest.getStateAction().equals(PUBLISH_EVENT.toString())) {
             if (!event.getState().equals(PENDING)) {
-                throw new ConflictException(String.format("Event with id=%d is not PENDING", eventId));
+                throw new ForbiddenException("Cannot publish the event because it's not in the right state: " + event.getState());
             }
             event.setState(PUBLISHED);
         }
         if (updateEventAdminRequest.getStateAction().equals(REJECT_EVENT.toString())) {
             if (event.getState().equals(PUBLISHED)) {
-                throw new ConflictException(String.format("Event with id=%d is PUBLISHED", eventId));
+                throw new ForbiddenException("Cannot reject the event because it's not in the right state: " + event.getState());
             }
             event.setState(CANCELED);
         }

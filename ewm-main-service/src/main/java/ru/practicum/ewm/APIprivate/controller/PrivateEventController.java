@@ -44,7 +44,7 @@ public class PrivateEventController {
 
     @GetMapping("{eventId}/requests")
     public ResponseEntity<List<ParticipationRequestDto>> getRequestsByEventIdAndInitiatorId(@PathVariable Long userId,
-                                                                                      @PathVariable Long eventId) {
+                                                                                            @PathVariable Long eventId) {
         return new ResponseEntity<>(service.getRequestsByEventIdAndInitiatorId(eventId, userId), HttpStatus.OK);
     }
 

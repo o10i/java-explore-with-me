@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.dto.ParticipationRequestDto;
 import ru.practicum.ewm.common.enums.State;
 import ru.practicum.ewm.common.exception.ConflictException;
+import ru.practicum.ewm.common.exception.ForbiddenException;
 import ru.practicum.ewm.common.exception.NotFoundException;
 import ru.practicum.ewm.common.model.Event;
 import ru.practicum.ewm.common.model.Request;
@@ -18,6 +19,7 @@ import ru.practicum.ewm.common.repository.UserRepository;
 
 import java.util.List;
 
+import static ru.practicum.ewm.common.enums.Status.CONFIRMED;
 import static ru.practicum.ewm.common.enums.Status.REJECTED;
 import static ru.practicum.ewm.common.mapper.RequestMapper.*;
 
@@ -38,19 +40,30 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
 
     @Transactional
     @Override
-    public ParticipationRequestDto save(Long userId, Long eventId) {
+    public ParticipationRequestDto sendRequest(Long userId, Long eventId) {
+        checkRequestExist(userId, eventId);
+
         Event event = getEventByIdWithCheck(eventId);
+
         User requester = getUserByIdWithCheck(userId);
+
+        //event.setConfirmedRequests((long) repository.findAllByEventIdAndStatus(eventId, CONFIRMED).size());
 
         checkConflicts(userId, eventId, event);
 
         return toParticipationRequestDto(repository.save(toRequest(event, requester)));
     }
 
+    private void checkRequestExist(Long userId, Long eventId) {
+        if (repository.findByRequesterIdAndEventId(userId, eventId).isPresent()) {
+            throw new ForbiddenException(String.format("Request with requesterId=%d and eventId=%d already exist", userId, eventId));
+        }
+    }
+
     @Transactional
     @Override
-    public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-        Request request = getRequestsByIdAndRequesterIdWithCheck(userId, requestId);
+    public ParticipationRequestDto cancelRequest(Long userId, Long eventId) {
+        Request request = getRequestsByIdAndRequesterIdWithCheck(userId, eventId);
         request.setStatus(REJECTED);
         return toParticipationRequestDto(repository.save(request));
     }
@@ -62,7 +75,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new ConflictException(String.format("Event with id=%d is not published", eventId));
         }
-        if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit() <= event.getConfirmedRequests()) {
             throw new ConflictException(String.format("Event with id=%d has reached participant limit", eventId));
         }
     }
@@ -77,8 +90,8 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 .orElseThrow(() -> new NotFoundException(String.format("User with id=%d was not found", userId)));
     }
 
-    private Request getRequestsByIdAndRequesterIdWithCheck(Long userId, Long requestId) {
-        return repository.findByIdAndRequesterId(requestId, userId)
-                .orElseThrow(() -> new NotFoundException(String.format("Request with id=%d and requesterId=%d was not found", requestId, userId)));
+    private Request getRequestsByIdAndRequesterIdWithCheck(Long userId, Long eventId) {
+        return repository.findByEventIdAndRequesterId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException(String.format("Request with id=%d and requesterId=%d was not found", eventId, userId)));
     }
 }
