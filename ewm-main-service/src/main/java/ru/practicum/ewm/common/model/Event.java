@@ -50,6 +50,7 @@ public class Event {
     @Column
     Boolean requestModeration;
     @Column
+    @Enumerated(EnumType.STRING)
     State state;
     @Column(nullable = false)
     String title;

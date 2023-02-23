@@ -77,6 +77,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
         Event event = getByIdAndInitiatorIdWithCheck(eventId, userId);
 
+        if (event.getState().equals(PUBLISHED)) {
+            throw new ForbiddenException("Event must not be published");
+        }
+
         setStateByInitiator(updateEventUserRequest, event);
 
         updateEventByInitiator(updateEventUserRequest, event);
@@ -93,22 +97,15 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Transactional
     @Override
     public EventRequestStatusUpdateResult updateRequestStatusByInitiator(Long eventId, Long userId, EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
-        List<Long> requestIds = eventRequestStatusUpdateRequest.getRequestIds();
-        String status = eventRequestStatusUpdateRequest.getStatus();
-
-        Event event = getByIdIdWithCheck(eventId);
-        Boolean requestModeration = event.getRequestModeration();
-        Long participantLimit = event.getParticipantLimit();
-        Long approvedRequests = event.getConfirmedRequests();
-        Long availableParticipants = participantLimit - approvedRequests;
-        Long potentialParticipants = (long) requestIds.size();
-
         List<ParticipationRequestDto> confirmedRequests = List.of();
         List<ParticipationRequestDto> rejectedRequests = List.of();
 
+        List<Long> requestIds = eventRequestStatusUpdateRequest.getRequestIds();
         List<Request> requests = requestIds.stream()
                 .map(this::getRequestByIdWithCheck)
                 .collect(Collectors.toList());
+
+        String status = eventRequestStatusUpdateRequest.getStatus();
 
         if (status.equals(REJECTED.toString())) {
             rejectedRequests = requests.stream()
@@ -116,17 +113,21 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                     .map(requestRepository::save)
                     .map(RequestMapper::toParticipationRequestDto)
                     .collect(Collectors.toList());
-        } else if (status.equals(CONFIRMED.toString())) {
-            if (participantLimit != 0 && participantLimit.equals(approvedRequests)) {
-                throw new ConflictException("The participant limit has been reached");
-            } else if (participantLimit == 0 && !requestModeration) {
-                confirmedRequests = requests.stream()
-                        .peek(request -> request.setStatus(CONFIRMED))
-                        .map(requestRepository::save)
-                        .map(RequestMapper::toParticipationRequestDto)
-                        .collect(Collectors.toList());
-                event.setConfirmedRequests(approvedRequests + potentialParticipants);
-            } else if (potentialParticipants <= availableParticipants) {
+            return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
+        }
+
+        Event event = getByIdIdWithCheck(eventId);
+        Long participantLimit = event.getParticipantLimit();
+        Long approvedRequests = event.getConfirmedRequests();
+        Long availableParticipants = participantLimit - approvedRequests;
+        Long potentialParticipants = (long) requestIds.size();
+
+        if (participantLimit > 0 && participantLimit.equals(approvedRequests)) {
+            throw new ConflictException(String.format("Event with id=%d has reached participant limit", eventId));
+        }
+
+        if (status.equals(CONFIRMED.toString())) {
+            if (participantLimit.equals(0L) || (potentialParticipants <= availableParticipants && !event.getRequestModeration())) {
                 confirmedRequests = requests.stream()
                         .peek(request -> request.setStatus(CONFIRMED))
                         .map(requestRepository::save)
@@ -146,10 +147,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                         .map(requestRepository::save)
                         .map(RequestMapper::toParticipationRequestDto)
                         .collect(Collectors.toList());
-                event.setConfirmedRequests(event.getParticipantLimit());
+                event.setConfirmedRequests(participantLimit);
             }
-        } else {
-            throw new ForbiddenException("Only rejected or confirmed status expected");
         }
         repository.save(event);
         return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
@@ -213,21 +212,13 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private Event getByIdAndInitiatorIdWithCheck(Long eventId, Long initiatorId) {
-        Event event = repository.findByIdAndInitiatorId(eventId, initiatorId)
+        return repository.findByIdAndInitiatorId(eventId, initiatorId)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%d and initiatorId=%d was not found", eventId, initiatorId)));
-        if (event.getState().equals(PUBLISHED)) {
-            throw new ForbiddenException("Event must not be published");
-        }
-        return event;
     }
 
     private Event getByIdIdWithCheck(Long eventId) {
-        Event event = repository.findById(eventId)
+        return repository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%d was not found", eventId)));
-        if (!event.getState().equals(PENDING)) {
-            throw new ForbiddenException("Event must be pending");
-        }
-        return event;
     }
 
     private Request getRequestByIdWithCheck(Long requestId) {
@@ -235,7 +226,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 .orElseThrow(() -> new NotFoundException(String.format("Request with id=%d was not found", requestId)));
 
         if (!request.getStatus().equals(Status.PENDING)) {
-            throw new BadRequestException("Request must have status PENDING");
+            throw new ConflictException("Request must have status pending");
         }
 
         return request;

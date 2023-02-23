@@ -62,6 +62,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         QEvent event = QEvent.event;
         List<BooleanExpression> conditions = new ArrayList<>();
 
+        conditions.add(event.state.eq(PUBLISHED));
         if (text != null && !text.isEmpty()) {
             conditions.add(event.annotation.toLowerCase().like('%' + text.toLowerCase() + '%')
                     .or(event.description.toLowerCase().like('%' + text.toLowerCase() + '%')));
@@ -90,7 +91,6 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .get();
 
         List<Event> events = StreamSupport.stream(repository.findAll(expression, sortBy).spliterator(), false)
-                .filter(event1 -> event1.getState().equals(PUBLISHED))
                 .skip(from).limit(size)
                 .collect(Collectors.toList());
 

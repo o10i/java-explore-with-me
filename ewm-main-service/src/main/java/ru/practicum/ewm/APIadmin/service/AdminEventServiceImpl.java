@@ -123,7 +123,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             event.setCategory(categoryService.getByIdWithCheck(updateEventAdminRequest.getCategory()));
         }
         if (updateEventAdminRequest.getDescription() != null) {
-            event.setAnnotation(updateEventAdminRequest.getDescription());
+            event.setDescription(updateEventAdminRequest.getDescription());
         }
         if (updateEventAdminRequest.getEventDate() != null) {
             event.setEventDate(toLocalDateTime(updateEventAdminRequest.getEventDate()));

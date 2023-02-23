@@ -27,10 +27,10 @@ public class PrivateRequestController {
     }
 
 
-    @PatchMapping("/{eventId}/cancel")
+    @PatchMapping("/{requestId}/cancel")
     public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable Long userId,
-                                                                 @PathVariable Long eventId) {
-        return ResponseEntity.ok(service.cancelRequest(userId, eventId));
+                                                                 @PathVariable Long requestId) {
+        return ResponseEntity.ok(service.cancelRequest(userId, requestId));
     }
 
 }
