@@ -18,17 +18,17 @@ public class PublicEventController {
     private final PublicEventService service;
 
     @GetMapping()
-    public ResponseEntity<List<EventShortDto>> getAllByPublicRequest(@RequestParam(required = false) String text,
-                                                                     @RequestParam(required = false) List<Long> categories,
-                                                                     @RequestParam(required = false) Boolean paid,
-                                                                     @RequestParam(required = false) String rangeStart,
-                                                                     @RequestParam(required = false) String rangeEnd,
-                                                                     @RequestParam(defaultValue = "FALSE") Boolean onlyAvailable,
-                                                                     @RequestParam(required = false) String sort,
-                                                                     @RequestParam(defaultValue = "0") Integer from,
-                                                                     @RequestParam(defaultValue = "10") Integer size,
-                                                                     HttpServletRequest request) {
-        return ResponseEntity.ok(service.getAllByPublicRequest(text, categories, paid, rangeStart, rangeEnd,
+    public ResponseEntity<List<EventShortDto>> getAll(@RequestParam(required = false) String text,
+                                                      @RequestParam(required = false) List<Long> categories,
+                                                      @RequestParam(required = false) Boolean paid,
+                                                      @RequestParam(required = false) String rangeStart,
+                                                      @RequestParam(required = false) String rangeEnd,
+                                                      @RequestParam(defaultValue = "FALSE") Boolean onlyAvailable,
+                                                      @RequestParam(required = false) String sort,
+                                                      @RequestParam(defaultValue = "0") Integer from,
+                                                      @RequestParam(defaultValue = "10") Integer size,
+                                                      HttpServletRequest request) {
+        return ResponseEntity.ok(service.getAll(text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size, request));
     }
 

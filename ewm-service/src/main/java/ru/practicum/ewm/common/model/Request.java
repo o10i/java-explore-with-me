@@ -27,5 +27,6 @@ public class Request {
     @Column
     LocalDateTime created;
     @Column
+    @Enumerated(EnumType.STRING)
     Status status;
 }

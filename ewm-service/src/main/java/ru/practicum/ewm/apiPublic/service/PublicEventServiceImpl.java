@@ -40,9 +40,9 @@ public class PublicEventServiceImpl implements PublicEventService {
     HitClient hitClient;
 
     @Override
-    public List<EventShortDto> getAllByPublicRequest(String text, List<Long> categories, Boolean paid, String rangeStart,
-                                                     String rangeEnd, Boolean onlyAvailable, String sort, Integer from,
-                                                     Integer size, HttpServletRequest request) {
+    public List<EventShortDto> getAll(String text, List<Long> categories, Boolean paid, String rangeStart,
+                                      String rangeEnd, Boolean onlyAvailable, String sort, Integer from,
+                                      Integer size, HttpServletRequest request) {
         hitClient.save(toEndpointHit(request));
 
         Sort sortBy = Sort.unsorted();
