@@ -3,7 +3,6 @@ package ru.practicum.ewm.common.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import ru.practicum.ewm.common.enums.State;
 import ru.practicum.ewm.common.model.Event;
 
 import java.util.List;
@@ -15,8 +14,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecific
     List<Event> findAllByInitiatorId(Long initiatorId);
 
     Optional<Event> findByIdAndInitiatorId(Long eventId, Long initiatorId);
-
-    Optional<Event> findByIdAndState(Long eventId, State state);
 
     List<Event> findAllByIdIn(Set<Long> events);
 
