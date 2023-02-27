@@ -1,2 +1,3 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+Ссылка на пул-реквест для ревьюера:
+https://github.com/o10i/java-explore-with-me/pull/3
